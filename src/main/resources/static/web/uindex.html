@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<!--edge浏览器H5兼容设置-->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<!--360浏览器H5兼容设置-->
+	<meta name="renderer" content="webkit" />
+	<title>电脑商城</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--导入核心文件-->
+	<script src="../bootstrap3/js/holder.js"></script>
+	<link href="../bootstrap3/css/bootstrap.css" rel="stylesheet" type="text/css">
+	<script src="../bootstrap3/jquery-1.9.1.min.js"></script>
+	<script src="../bootstrap3/js/bootstrap.js"></script>
+	<!-- 字体图标 -->
+	<link rel="stylesheet" href="../bootstrap3/font-awesome-4.7.0/css/font-awesome.css" />
+	<link rel="stylesheet" type="text/css" href="../css/layout.css" />
+	<link rel="stylesheet" type="text/css" href="../css/top.css" />
+	<link rel="stylesheet" type="text/css" href="../css/footer.css" />
+	<style>
+		.header {
+			background-color: #f7f7f7;
+			padding: 10px;
+		}
+
+		.header .small-image {
+			width: 50px;
+			height: 50px;
+			margin-right: 10px;
+			border-radius: 50%;
+		}
+
+		.header .top-item ul {
+			margin-bottom: 0;
+		}
+
+		.header .top-item li {
+			display: inline-block;
+			margin-right: 10px;
+		}
+
+		.header .li-split {
+			color: #999;
+		}
+
+		.header .top-dropdown-btn {
+			color: #555;
+		}
+
+		.header .top-dropdown-ul {
+			border: none;
+			border-radius: 0;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+		}
+
+		.header .top-dropdown-ul li a {
+			padding: 5px 15px;
+			color: #555;
+		}
+
+		.header .top-dropdown-ul li a:hover {
+			background-color: #f7f7f7;
+		}
+
+		.header .top-dropdown-ul li:last-child a {
+			border-bottom: none;
+		}
+
+		.header .top-dropdown-btn .caret {
+			margin-left: 5px;
+		}
+
+		.small-image {
+			width: 5%;
+			height: auto;
+		}
+	</style>
+</head>
+
+<body>
+	<!--头部-->
+	<header class="header">
+		<!--电脑商城logo-->
+		<img src="../images/index/yunlogo.jpg" alt="" class="small-image" />
+	</header>
+	<div class="row top-nav">
+		<div class="col-md-6">
+			<ul class="nav nav-pills">
+				<li>
+					<a href="#"></a>
+				</li>
+				<li class="active"><a href="login.html"><span class="fa fa-home"></span></a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="container">
+		<div class="col-md-10	">
+			<div class="panel panel-default">
+				<ul class="nav nav-tabs">
+					<li><a href="upassword.html">修改自身密码</a></li>
+					<li class="active"><a href="#">用户资料</a></li>
+				</ul>
+				<div id="employee-forms"></div>
+			</div>
+			<span class="pull-right"></span><a href="uregister.html">添加用户</a></span>
+		</div>
+	</div>
+	<div class="clearfix"></div>
+	<footer class="footer">
+		<div class="col-md-12 text-center bottom">
+			Copyright ©ynushop
+		</div>
+	</footer>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$.ajax({
+				url: "/users/get_all_uid",
+				type: "GET",
+				dataType: "json",
+				success: function (json) {
+					if (json.state === 200) {
+						const employees = json.data;
+						employees.forEach(function (employee) {
+							displayEmployeeInfo(employee);
+						});
+					} else {
+						alert("获取全部员工信息失败！" + json.message);
+					}
+				}
+			});
+		});
+		function displayEmployeeInfo(employee) {
+			const employeeForm = $("<form></form>").addClass("employee-info");
+
+			const table = $("<table></table>").addClass("table table-bordered");
+
+			// 表格头部
+			const tableHead = $("<thead></thead>");
+			const tableHeadRow = $("<tr></tr>");
+
+			// 表头 - 操作
+			const actionHeader = $("<th></th>").text("操作");
+			tableHeadRow.append(actionHeader);
+
+			// 表头 - 用户名
+			const usernameHeader = $("<th></th>").text("用户名");
+			tableHeadRow.append(usernameHeader);
+
+			// 表头 - 电话号码
+			const phoneHeader = $("<th></th>").text("电话号码");
+			tableHeadRow.append(phoneHeader);
+
+			// 表头 - 电子邮箱
+			const emailHeader = $("<th></th>").text("电子邮箱");
+			tableHeadRow.append(emailHeader);
+
+			// 表头 - 性别
+			const genderHeader = $("<th></th>").text("性别");
+			tableHeadRow.append(genderHeader);
+
+			const leaveHeader = $("<th></th>").text("级别");
+			tableHeadRow.append(leaveHeader);
+
+			const createHeader = $("<th></th>").text("创建时间");
+			tableHeadRow.append(createHeader);
+
+			const moHeader = $("<th></th>").text("修改人");
+			tableHeadRow.append(moHeader);
+
+			tableHead.append(tableHeadRow);
+			table.append(tableHead);
+
+			// 表格内容
+			const tableBody = $("<tbody></tbody>");
+			const tableBodyRow = $("<tr></tr>");
+
+			// 操作单元格
+			const actionCell = $("<td></td>");
+			const changeButton = $("<button></button>")
+				.addClass("btn btn-primary")
+				.text("修改用户信息");
+			changeButton.attr("data-uid", employee.uid);
+			actionCell.append(changeButton);
+
+			const changePasswordButton = $("<button></button>")
+				.addClass("btn btn-primary")
+				.text("修改密码");
+			changePasswordButton.attr("data-uid", employee.uid);
+			actionCell.append(changePasswordButton);
+
+			// 用户名
+			const usernameCell = $("<td></td>").text(employee.username);
+			tableBodyRow.append(actionCell, usernameCell);
+
+			// 电话号码
+			const phoneCell = $("<td></td>").text(employee.phone);
+			tableBodyRow.append(phoneCell);
+
+			// 电子邮箱
+			const emailCell = $("<td></td>").text(employee.email);
+			tableBodyRow.append(emailCell);
+
+			// 性别
+			const genderCell = $("<td></td>").text(employee.gender === 0 ? "男" : "女");
+			tableBodyRow.append(genderCell);
+			//级别
+
+			const leaveCell = $("<td></td>");
+			if (employee.leave === 0) {
+				leaveCell.text("铜牌客户");
+			} else if (employee.leave === 1) {
+				leaveCell.text("银牌客户");
+			} else if (employee.leave === 2) {
+				leaveCell.text("金牌客户");
+			} else {
+				leaveCell.text("数据错误");
+			}
+			tableBodyRow.append(leaveCell);
+			
+			const createCell = $("<td></td>");
+			const createdDate = new Date(employee.createdTime);
+			const formattedDate = createdDate.toLocaleString();
+			createCell.text(formattedDate);
+			tableBodyRow.append(createCell);
+
+			const moCell = $("<td></td>").text(employee.modifiedUser);
+			tableBodyRow.append(moCell);
+
+
+
+			tableBody.append(tableBodyRow);
+			table.append(tableBody);
+
+			employeeForm.append(table);
+
+			employeeForm.appendTo("#employee-forms");
+
+			changeButton.click(function () {
+				const uid = $(this).attr("data-uid");
+				const newPhone = prompt("请输入新的电话号码：", employee.phone);
+				const newEmail = prompt("请输入新的电子邮箱：", employee.email);
+				const newGender = prompt("请输入新的性别（0代表男，1代表女）：", employee.gender);
+				const newLeave = prompt("请输入新的用户级别0、1、2分别对应铜牌客户、银牌客户、金排客户：", employee.leave);
+
+				if (newPhone !== null && newEmail !== null && newGender !== null && newLeave !== null) {
+					const employeeData = {
+
+						uid: uid,
+						phone: newPhone,
+						email: newEmail,
+						gender: newGender,
+						leave: newLeave
+					};
+
+					$.ajax({
+						url: "/users/change_all_info",
+						type: "POST",
+						data: employeeData,
+						dataType: "json",
+						success: function (response) {
+							if (response.state === 200) {
+								phoneCell.text(newPhone);
+								emailCell.text(newEmail);
+								genderCell.text(newGender === "0" ? "男" : "女");
+
+								alert("修改成功！");
+							} else {
+								alert("修改失败：" + response.message);
+							}
+						},
+						error: function (xhr) {
+							alert("发生错误：" + xhr.statusText);
+						}
+					});
+				}
+			});
+			changePasswordButton.click(function () {
+				const uid = $(this).attr("data-uid");
+				const newPassword = prompt("请输入新密码：");
+
+				if (newPassword !== null) {
+					const passwordData = {
+						uid: uid,
+						password: newPassword,
+					};
+
+					$.ajax({
+						url: "/users/change_all_password",
+						type: "POST",
+						data: passwordData,
+						dataType: "json",
+						success: function (json) {
+							if (json.state == 200) {
+								alert("修改成功！");
+							} else {
+								alert("修改失败！" + json.message);
+							}
+						}
+					});
+				}
+			});
+		}
+	</script>
+</body>
+
+</html>
